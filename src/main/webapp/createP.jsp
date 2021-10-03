@@ -29,21 +29,19 @@
 	</div>
 </div>
 	<h2>Create new patient</h2>
-	<form action="add" name="patient" method="post">
-		<%-- <div>
-			<input hidden name="p_id" value="${patient.p_id}">
-		</div>--%>
+	<form action="add" name="patient" method="post" name="creating"
+		onsubmit="return checkFormPatient()">
 		<p>
 		<div>
-			<input name="firstname" type="text" placeholder="firstname" class="inPut" id="firstname" required="required">
+			<input name="firstname" type="text" placeholder="firstname" class="inPut" id="firstname" >
 		</div>
 		<p>
 		<div>
-			<input name="lastname" type="text" placeholder="lastname" class="inPut" id="lastname" required="required">
+			<input name="lastname" type="text" placeholder="lastname" class="inPut" id="lastname" >
 		</div>
 		<p>
 		<div>
-			<input name="username" type="text" placeholder="username" class="inPut" id="username" required="required">
+			<input name="username" type="text" placeholder="username" class="inPut" id="username" >
 		</div>
 		<p>
 		<div>
@@ -51,7 +49,7 @@
 		</div>
 		<p>
 		<div>
-			<input name="password" type="password" placeholder="password" class="inPut" id="psw" required="required">
+			<input name="password" type="text" placeholder="password" class="inPut" id="psw" required="required">
 		</div>
 		<p>
 		<div>
@@ -59,15 +57,16 @@
 		</div>
 		<p>
 	 	<div>
-			<input name="hcId" type="text" placeholder="number of h_card" class="inPut" id="hid" required="required">
+			<input name="hcId" type="text" placeholder="number of h_card" class="inPut" id="hid" >
 		</div>
 		<p>
 		<div>
-		<input type="submit" value="Create new Patient">
+		<input type="submit" value="Create new Patient" class="apply-button">
 		</div>
+		
 	</form>
 	<script type="text/javascript"
-		src="${pageContext.request.contextPath}/scripts/checkNewPat.js"></script>
+		src="${pageContext.request.contextPath}/scripts/checkNewpat.js"></script>
 	
 </body>
 </html>

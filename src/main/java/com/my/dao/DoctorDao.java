@@ -1,37 +1,30 @@
 package com.my.dao;
 
 import java.sql.Connection;
-import java.util.stream.Collectors;
-import java.util.*;
-import static java.util.stream.Collectors.counting;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-//import java.util.stream.Collectors;
 
-//import org.apache.logging.log4j.Level;
-//import org.apache.logging.log4j.LogManager;
-//import org.apache.logging.log4j.Logger;
+
+import com.my.control.ListOfPatients;
 
 import com.my.db.DbManager;
 import com.my.entity.Doctor;
 import com.my.exception.DBException;
 
 public class DoctorDao {
-	// private static final Logger logger = LogManager.getLogger();
-	private static Logger logger = Logger.getLogger(DoctorDao.class.getName());
-	// private static final Logger logger =
-	// Logger.class.getLogger(DoctorDao.class.getName());
+	
+	//private static Logger logger = Logger.getLogger(DoctorDao.class.getName());
+	private static final Logger log = Logger.getLogger(DoctorDao.class);
 
 	private static final String FIND_ALL_DOCTORS = "SELECT * FROM doctor";
 	private static final String SQL_INSERT_DOCTOR = "INSERT INTO doctor VALUES (DEFAULT,?,?,?,?,?,?)";
@@ -87,8 +80,8 @@ public class DoctorDao {
 				d.setPassword(rs.getString(6));
 				d.setrId(rs.getInt(7));
 			}
-		} catch (Exception e) {
-			logger.log(Level.SEVERE, "find all doctors exception : ", e);
+		} catch (Exception e){
+			log.log(Level.DEBUG, "find all doctors exception : ", e);
 
 			return Collections.emptyList();
 		} finally {
@@ -135,7 +128,7 @@ public class DoctorDao {
 				doctors.add(doc);
 			}
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, "findAllDoctors(Connection con, int limit, int offset): ", e);
+			log.log(Level.DEBUG, "findAllDoctors(Connection con, int limit, int offset): ", e);
 			return Collections.emptyList();
 		} finally {
 			DbManager.close(rs);
@@ -161,7 +154,7 @@ public class DoctorDao {
 			con.commit();
 
 		} catch (SQLException ex) {
-			logger.log(Level.SEVERE, "Cannot insert a doctor: ", ex);
+			log.log(Level.DEBUG, "Cannot insert a doctor: ", ex);
 			DbManager.rollback(con);
 			throw new DBException("Cannot insert a doctor", ex);
 		} finally {
@@ -183,7 +176,7 @@ public class DoctorDao {
 			System.out.println("Doctor was deleted with id: " + did);
 			con.commit();
 		} catch (SQLException ex) {
-			logger.log(Level.SEVERE, "deleteDoctor(int did) failed : ", ex);
+			log.log(Level.DEBUG, "deleteDoctor(int did) failed : ", ex);
 			DbManager.rollback(con);
 			throw new DBException("Cannot delete doctor", ex);
 
@@ -213,7 +206,7 @@ public class DoctorDao {
 			}
 			con.commit();
 		} catch (SQLException ex) {
-			logger.log(Level.SEVERE, "updateDoctor(Connection con, Doctor doctor) failed : ", ex);
+			log.log(Level.DEBUG, "updateDoctor(Connection con, Doctor doctor) failed : ", ex);
 			DbManager.rollback(con);
 			throw new DBException("Cannot update a doctor", ex);
 		} finally {
@@ -243,7 +236,7 @@ public class DoctorDao {
 			}
 
 		} catch (SQLException ex) {
-			logger.log(Level.SEVERE, "getDoctor(Connection conn, int did) failed : ", ex);
+			log.log(Level.DEBUG, "getDoctor(Connection conn, int did) failed : ", ex);
 			throw new DBException("Cannot get a doctor", ex);
 		} finally {
 			DbManager.close(rs);
@@ -272,7 +265,7 @@ public class DoctorDao {
 				d.setrId(rs.getInt(7));
 			}
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, "sortDocByNm() failed : ", e);
+			log.log(Level.DEBUG, "sortDocByNm() failed : ", e);
 			return Collections.emptyList();
 		} finally {
 			DbManager.close(rs);
@@ -300,7 +293,7 @@ public class DoctorDao {
 				d.setrId(rs.getInt(7));
 			}
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, "sortCathegoryDoc() failed : ", e);
+			log.log(Level.DEBUG, "sortCathegoryDoc() failed : ", e);
 			return Collections.emptyList();
 		} finally {
 			DbManager.close(rs);
@@ -309,77 +302,4 @@ public class DoctorDao {
 		return doctors;
 	}
 
-//	// public List<Doctor> sortQuantityOfPat(Connection con) {
-//	public Map<Object, Long> sortQuantityOfPat(Connection con) {
-//		// Map<Doctor, Integer> = new ArrayList<>();
-//		List<Doctor> doctors = new ArrayList<>();
-//		Statement stat = null;
-//		ResultSet rs = null;
-//		try {
-//			stat = con.createStatement();
-//			//rs = stat.executeQuery(SQL_FIND_ALL_DOCTORS_BY_QUANTITY_OF_PATIENTS);
-//			rs = stat.executeQuery(FIND_ALL_DOCTORS);
-//			while (rs.next()) {
-//				Doctor d = new Doctor();
-//				doctors.add(d);
-//				d.setdId(rs.getInt(1));
-//				d.setFirstname(rs.getString(2));
-//				d.setLastname(rs.getString(3));
-//				d.setUsername(rs.getString(4));
-//				d.setCategory(rs.getString(5));
-//				d.setPassword(rs.getString(6));
-//				d.setrId(rs.getInt(7));
-//			}
-////			Map<List, Long> wordsFreq = Arrays.stream(text)
-////			        .collect(Collectors.groupingBy((s ->s), counting()));
-////			    System.out.println("Получена карта, "
-////			            + "\nключ - слово, значение - количество вхожденией в строку: ");
-////			    
-////			    for(Map.Entry<String, Long> d: wordsFreq.entrySet()){
-////			                System.out.println(d.getKey() + " - " + d.getValue());
-//
-//		} catch (Exception e) {
-//			logger.log(Level.SEVERE, "sortQuantityOfPat() failed : ", e);
-//			// return Collections.emptyList();
-//			return Collections.emptyMap();
-//		} finally {
-//			DbManager.close(rs);
-//			DbManager.close(stat);
-//		}
-//		Map<List<? extends Doctor>, Long> patFreq = doctors.stream()
-//				.collect(Collectors.groupingBy((s -> s), counting()), Collectors.toMap());
-//		System.out.println("Получена карта, " + "\nключ - слово, значение - количество вхожденией в строку: ");
-//
-//		for (Map.Entry<List<Doctor>, Long> d : patFreq.entrySet()) {
-//			System.out.println(d.getKey() + " - " + d.getValue());
-//
-//			List<Doctor> givenList3 = new ArrayList<>((doctors));
-//
-////			Map<List<Doctor>, Integer> phonesByDiag = givenList3.stream()
-////					.collect(Collectors.groupingBy((p -> p.getDiag()), Collectors.toList()));
-////			System.out.println("Карта телефонов, где ключ-диагональ, значение - список телефонов: ");
-////			for (Map.Entry<List<Doctor>, Integer> fr : phonesByDiag.entrySet()) {
-////				System.out.println(fr.getKey() + " - " + fr.getValue());
-////			}
-//			
-//			Map<Object, Long> freqP = doctors.stream()
-//					.collect(Collectors.groupingBy((s -> s), counting()))
-//							.entrySet().stream().sorted(Comparator.comparing(Map.Entry::getValue))
-//							.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,(e1, e2)-> e1, LinkedHashMap::new));
-//			// return doctors;
-//
-//			return freqP;
-////		int res = 0;
-////
-////		try (PreparedStatement pstmt = con.prepareStatement(SQL_DOCTORS_NUMBER_OF_RECORDS,
-////				ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY)) {
-////
-////			try (ResultSet resultSet = pstmt.executeQuery()) {
-////				if (resultSet.first()) {
-////					res = resultSet.getInt("number_doctor");
-////				}
-////			}
-////		}
-////		
-//	}
 }

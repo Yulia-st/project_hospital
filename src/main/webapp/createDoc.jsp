@@ -31,41 +31,40 @@
 	</div>
 </div>
 	<h2>Create New Doctor</h2>
-	<form action="addDoc" name="doctor" method="post">
+	<form action="addDoc" name="doctor" method="post" name="createDoc"
+		onsubmit="return checkFormDoc()">
 		<div>
 			<input hidden name="dId" value="${doctor.dId}">
 		</div>
 		<p>
 		<div>
-			<input name="firstname" type="text" placeholder="firstname" class="inPut">
+			<input name="firstname" type="text" placeholder="firstname" class="inPut" required="required" id="firstname">
 		</div>
 		<p>
 		<div>
-			<input name="lastname" type="text" placeholder="lastname" class="inPut">
+			<input name="lastname" type="text" placeholder="lastname" class="inPut" required="required" id="lastname">
 		</div>
 		<p>
 		<div>
-			<input name="username" type="text" placeholder="username" class="inPut">
+			<input name="username" type="text" placeholder="username" class="inPut" required="required" id="username">
 		</div>
 		<p>
 		<div>
-			<input name="cathegory" type="text" placeholder="cathegory" class="inPut">
+			<input name="cathegory" type="text" placeholder="cathegory" class="inPut" required="required" id="cat">
 		</div>
 		<p>
 		<div>
-			<input name="password" type="password" placeholder="password" class="inPut">
+			<input name="password" type="password" placeholder="password" class="inPut" required="required" id="psw">
 		</div>
 		<p>
 		<div>
-			<input name="rId" type="number" placeholder="number of role" class="inPut">
+			<input name="rId" type="number" placeholder="number of role" class="inPut" required="required" id="rid">
 		</div>
 		<p>
-		<%-- <div>
-			<input name="hc_id" type="text" placeholder="number of h_card" class="inPut">
-		</div>--%>
-		<p>
-		
-		<input type="submit" value="Create new Doctor">
+		<input type="submit" value="Create new Doctor" class="apply-button">
 	</form>
+	<script type="text/javascript"
+		src="${pageContext.request.contextPath}/scripts/checkNewDoc.js"></script>
+	
 </body>
 </html>

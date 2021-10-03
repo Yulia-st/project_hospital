@@ -39,42 +39,42 @@
 					<input type="hidden" value="${patient.pId}" name="pId" />
 					<p>
 						<label for="firstname">Firstname:</label> <input name="firstname"
-							value="${patient.firstname}" class="inPut" />
+							value="${patient.firstname}" class="inPut" required="required" />
 				</div>
 				<p>
 				<div class="field">
 					<label for="lastname">Lastname:</label> <input name="lastname"
-						value="${patient.lastname}" class="inPut" />
+						value="${patient.lastname}" class="inPut" required="required" />
 
 				</div>
 				<p>
 				<div class="field">
-					<label for="lusername">Username:</label> <input name="username"
-						value="${patient.username}" class="inPut" />
+					<label for="username">Username:</label> <input name="username"
+						value="${patient.username}" class="inPut" required="required" />
 
 				</div>
 				<p>
 				<div class="field">
 					<label for="birthday">Birthday:</label> <input name="birthday"
-						value="${patient.birthday}" class="inPut" />
+						value="${patient.birthday}" class="inPut" required="required" />
 
 				</div>
 				<p>
 				<div class="field">
 					<label for="psw">Password:</label> <input name="password"
-						value="${patient.password}" class="inPut" />
+						value="${patient.password}" class="inPut" required="required" />
 
 				</div>
 				<p>
 				<div class="field">
 					<label for="rid">Role's number:</label> <input name="rId"
-						value="${patient.rId}" class="inPut" />
+						value="${patient.rId}" class="inPut" required="required" />
 
 				</div>
 				<p>
 				<div class="field">
 					<label for="hcid">H_C's number:</label><input name="hcId"
-						value="${patient.hcId}" class="inPut" />
+						value="${patient.hcId}" class="inPut" required="required" />
 
 				</div>
 				<p>
@@ -82,5 +82,7 @@
 			</div>
 		</div>
 	</form>
+	
+	<p>
 </body>
 </html>

@@ -1,7 +1,7 @@
 package com.my.filter;
 
 import java.io.IOException;
-import java.util.logging.Logger;
+
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -11,11 +11,11 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 
-import com.my.dao.DoctorDao;
+import org.apache.log4j.Logger;
 
 @WebFilter(filterName = "CharsetFilter")
 public class CharsetFilter implements Filter {
-	private static Logger logger = Logger.getLogger(DoctorDao.class.getName());
+	private static final Logger log = Logger.getLogger(CharsetFilter.class);
 
 	private String encoding = "UTF-8";
 

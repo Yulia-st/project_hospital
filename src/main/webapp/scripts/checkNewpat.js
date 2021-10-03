@@ -1,12 +1,9 @@
-function checkForm() {
-	
-	
+function checkFormPatient() {
 	let fnm = document.getElementById("firstname").value
 	let lastnm = document.getElementById("lastname").value
 	let usernm = document.getElementById("username").value
 	let bday = document.getElementById("birthd").value	
 	let password = document.getElementById("psw").value
-		
 	let role = document.getElementById("rid").value
 	let card = document.getElementById("hid").value
 	
@@ -32,8 +29,8 @@ function checkForm() {
 		return false
 	}
 	
-	if (!role.match("[2]{1}")) {
-		alert("Number of card contain at least is 1 digits!")
+	if (!role.match("[1]{1}")) {
+		alert("Choose a number of role 1!")
 		return false
 	}
 	if (!card.match("[0-9]+")) {

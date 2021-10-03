@@ -5,8 +5,6 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,14 +12,20 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+
 import com.my.dao.PatientDao;
 import com.my.db.DbManager;
 import com.my.entity.Patient;
 import com.my.exception.DBException;
-
+/**
+ * Servlet displays a form for edit an information about a patient on a page.
+ * 
+ */
 @WebServlet("/edit")
 public class EditPatient extends HttpServlet {
-	private static Logger log = Logger.getLogger(InsertNewPatient.class.getName());
+	private static final Logger log = Logger.getLogger(EditPatient.class);
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -32,8 +36,8 @@ public class EditPatient extends HttpServlet {
 		try {
 			con = DbManager.getInstance().getConnection();
 
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException ex) {
+			log.log(Level.DEBUG, "getConnection() failed : ", ex);
 		}
 		PatientDao dao = new PatientDao();
 		try {
@@ -46,9 +50,9 @@ public class EditPatient extends HttpServlet {
 				getServletContext().getRequestDispatcher("/notFound.jsp").forward(request, response);
 			}
 		} catch (DBException ex) {
-			log.log(Level.SEVERE, "insertPatient(con, p) failed : ", ex);
+			log.log(Level.DEBUG, "getPatient(con, pId) failed : ", ex);
 			request.setAttribute("errorMessage", ex.getMessage());
-			request.getRequestDispatcher("/views/error.jsp").forward(request, response);
+			request.getRequestDispatcher("views/error.jsp").forward(request, response);
 		}
 	}
 
@@ -81,9 +85,9 @@ public class EditPatient extends HttpServlet {
 			dao.updatePatient(con, patient);
 			response.sendRedirect("welcome.jsp");
 		} catch (DBException ex) {
-			log.log(Level.SEVERE, "updatePatient(con, p) failed : ", ex);
+			log.log(Level.DEBUG, "updatePatient(con, p) failed : ", ex);
 			request.setAttribute("errorMessage", ex.getMessage());
-			request.getRequestDispatcher("/views/error.jsp").forward(request, response);
+			request.getRequestDispatcher("views/error.jsp").forward(request, response);
 		}
 	}
 }

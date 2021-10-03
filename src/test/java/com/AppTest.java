@@ -2,19 +2,17 @@ package com;
 
 
 
-//import org.apache.logging.log4j.LogManager;
-//import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.junit.Test;
+import com.my.control.Signup;
 
 
 
 public class AppTest {
-	//private static final Logger logger = Logger.getLogger(AppTest.class.getName());
-	//private static final Logger logger = LogManager.getLogger();
-	
+	private static final Logger log = Logger.getLogger(AppTest.class);
 	
 	 @Test
 	    public void test1() {
-	 //       logger.info("App test log message.");
+	       log.info("App test log message.");
 	    }
 }

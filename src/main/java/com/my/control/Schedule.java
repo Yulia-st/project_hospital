@@ -8,7 +8,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+/**
+ * Servlet displays a page with schedule of the doctors.
+ *
+ */
 @WebServlet("/scheduleD")
 public class Schedule extends HttpServlet{
 	@Override

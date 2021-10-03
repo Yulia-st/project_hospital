@@ -5,8 +5,6 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,15 +12,21 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+
 import com.my.dao.DoctorDao;
 import com.my.db.DbManager;
 import com.my.entity.Doctor;
 import com.my.exception.DBException;
-
+/**
+ * Servlet displays a page after inserting a doctor.
+ *
+ */
 @WebServlet("/addDoc")
 public class InsertDoc extends HttpServlet {
-	private static Logger log = Logger.getLogger(InsertNewPatient.class.getName());
-
+	private static final Logger log = Logger.getLogger(InsertDoc.class);
+	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		response.setContentType("text/html");
@@ -33,8 +37,8 @@ public class InsertDoc extends HttpServlet {
 
 		try {
 			con = DbManager.getInstance().getConnection();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException ex) {
+			log.log(Level.DEBUG, "getConnection() failed : ", ex);
 		}
 		try {
 			String fname = request.getParameter("firstname");
@@ -50,9 +54,9 @@ public class InsertDoc extends HttpServlet {
 
 			dDao.insertDoc(con, d);
 		} catch (DBException ex) {
-			log.log(Level.SEVERE, "insertDoc(con, d) failed : ", ex);
+			log.log(Level.DEBUG, "insertDoc(con, d) failed : ", ex);
 			request.setAttribute("errorMessage", ex.getMessage());
-			request.getRequestDispatcher("/views/error.jsp").forward(request, response);
+			request.getRequestDispatcher("views/error.jsp").forward(request, response);
 		}
 
 		// response.sendRedirect("listOfPatients.jsp");

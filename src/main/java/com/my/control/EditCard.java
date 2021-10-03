@@ -3,8 +3,6 @@ package com.my.control;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,16 +10,22 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+
 import com.my.dao.DoctorDao;
 import com.my.dao.HospitalCardDao;
 import com.my.db.DbManager;
 import com.my.entity.Doctor;
 import com.my.entity.HospitalCard;
 import com.my.exception.DBException;
-
+/**
+ * Servlet displays a form for edit an information about a hospitl card by it id on a page.
+ * 
+ */
 @WebServlet("/editCard")
 public class EditCard extends HttpServlet{
-	private static Logger log = Logger.getLogger(InsertNewPatient.class.getName());
+	private static final Logger log = Logger.getLogger(EditCard.class);
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) 
 	        throws ServletException, IOException {
@@ -32,8 +36,8 @@ public class EditCard extends HttpServlet{
 		Connection con = null;
 		try {
 			con = DbManager.getInstance().getConnection();	
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException ex) {
+			log.log(Level.DEBUG, "getConnection() failed : ", ex);
 		}
 	        try {
 	            int hcId = Integer.parseInt(request.getParameter("hcId"));
@@ -43,12 +47,12 @@ public class EditCard extends HttpServlet{
 	                getServletContext().getRequestDispatcher("/editCard.jsp").forward(request, response);
 	            }
 	            else {
-	                getServletContext().getRequestDispatcher("notFound.jsp").forward(request, response);
+	                getServletContext().getRequestDispatcher("/notFound.jsp").forward(request, response);
 	            }
 	        }catch (DBException ex) {
-				log.log(Level.SEVERE, "Cannot get a hospital card : ", ex);
+				log.log(Level.DEBUG, "Cannot get a hospital card : ", ex);
 				request.setAttribute("errorMessage", ex.getMessage());
-				request.getRequestDispatcher("/views/error.jsp").forward(request, response);
+				request.getRequestDispatcher("views/error.jsp").forward(request, response);
 			}
 	    }
 	     
@@ -61,8 +65,8 @@ public class EditCard extends HttpServlet{
 	    	Connection con = null;
 			try {
 				con = DbManager.getInstance().getConnection();	
-			} catch (SQLException e) {
-				e.printStackTrace();
+			} catch (SQLException ex) {
+				log.log(Level.DEBUG, "getConnection() failed : ", ex);
 			}
 	        try {
 	        	int hcId = Integer.parseInt(request.getParameter("hcId"));
@@ -74,9 +78,9 @@ public class EditCard extends HttpServlet{
 	            dao.updateCard(con, hospitalCard);
 	            response.sendRedirect("welcome.jsp");
 	        }catch (DBException ex) {
-				log.log(Level.SEVERE, "updateCard(con, hospitalCard) failed : ", ex);
+				log.log(Level.DEBUG, "updateCard(con, hospitalCard) failed : ", ex);
 				request.setAttribute("errorMessage", ex.getMessage());
-				request.getRequestDispatcher("/views/error.jsp").forward(request, response);
+				request.getRequestDispatcher("views/error.jsp").forward(request, response);
 			}
 	    }
 }

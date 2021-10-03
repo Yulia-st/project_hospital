@@ -26,14 +26,14 @@ session.removeAttribute("error");
 	<form action="login" method="post" class="containerLogIn">
 		<div>
 			Enter username: <input type="text" name="username"
-				placeholder="Enter username" autofocus class="inPut"><br>
+				placeholder="Enter username" autofocus class="inPut" required="required"><br>
 			<!-- <input name="command" type="hidden" value="Login"> -->
 
 		</div>
 		<p>
 		<div>
 			Enter password: <input type="password" name="pass"
-				placeholder="Enter your password" class="inPut"><br>
+				placeholder="Enter your password" class="inPut" required="required"><br>
 
 		</div>
 		<p>

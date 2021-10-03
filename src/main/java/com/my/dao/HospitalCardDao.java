@@ -17,9 +17,10 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-//import org.apache.logging.log4j.Level;
-//import org.apache.logging.log4j.LogManager;
-//import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+
+import com.my.control.DischargeP;
 
 import com.my.db.DbManager;
 import com.my.entity.Doctor;
@@ -28,14 +29,10 @@ import com.my.entity.Patient;
 import com.my.exception.DBException;
 import com.mysql.cj.Session;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 public class HospitalCardDao {
-
-	private static Logger logger = Logger.getLogger(HospitalCardDao.class.getName());
-	// private static final Logger logger = Logger.getLogger(HospitalCardDao.class);
-	// private static final Logger logger = LogManager.getLogger();
+	private static final Logger log = Logger.getLogger(HospitalCardDao.class);
+	// private static Logger logger =
+	// Logger.getLogger(HospitalCardDao.class.getName());
 
 	private static final String SQL_FIND_ALL_CARD = "SELECT * FROM hospital_card";
 	private static final String SQL_INSERT_CARD = "INSERT INTO hospital_card VALUES (DEFAULT,?,?,?)";
@@ -59,8 +56,8 @@ public class HospitalCardDao {
 				hc.setdId(rs.getInt(4));
 
 			}
-		} catch (Exception e) {
-			logger.log(Level.SEVERE, "find all doctors exception : ", e);
+		} catch (Exception ex) {
+			log.log(Level.DEBUG, "find all doctors exception : ", ex);
 			// logger.error("findAll(Connection con) failed", e);
 			// ((org.apache.logging.log4j.Logger) logger).error("find all doctors
 			// exception:", e);
@@ -84,7 +81,7 @@ public class HospitalCardDao {
 			ps.executeUpdate();
 			con.commit();
 		} catch (SQLException ex) {
-			logger.log(Level.SEVERE, "insertHospCard(Connection con, HospitalCard hc) failed: ", ex);
+			log.log(Level.DEBUG, "insertHospCard(Connection con, HospitalCard hc) failed: ", ex);
 			DbManager.rollback(con);
 			throw new DBException("Cannot insert Hospital card for a patient", ex);
 		} finally {
@@ -103,7 +100,7 @@ public class HospitalCardDao {
 			System.out.println("Card was deleted with id: " + hcid);
 
 		} catch (SQLException ex) {
-			logger.log(Level.SEVERE, "deleteCard(int hcid) failed : ", ex);
+			log.log(Level.DEBUG, "deleteCard(int hcid) failed : ", ex);
 			DbManager.rollback(con);
 			throw new DBException("Cannot delete hospital card of the patient", ex);
 		} finally {
@@ -126,7 +123,7 @@ public class HospitalCardDao {
 			}
 			con.commit();
 		} catch (SQLException ex) {
-			logger.log(Level.SEVERE, "updateCard(HospitalCard hc) failed : ", ex);
+			log.log(Level.DEBUG, "updateCard(HospitalCard hc) failed : ", ex);
 			DbManager.rollback(con);
 			throw new DBException("Can't update a card", ex);
 		} finally {
@@ -154,7 +151,7 @@ public class HospitalCardDao {
 				throw new NoSuchElementException("No card with id " + hcid);
 			}
 		} catch (SQLException ex) {
-			logger.log(Level.SEVERE, "Cannot get a hospital card: ", ex);
+			log.log(Level.DEBUG, "Cannot get a hospital card: ", ex);
 			throw new DBException("Cannot get a hospital card", ex);
 		} finally {
 			DbManager.close(rs);
@@ -163,40 +160,33 @@ public class HospitalCardDao {
 		return hc;
 	}
 
+	/**
+	 * Method provides to get a discharge of patients: 
+	 * 1) check if id's patient exist 
+	 * 2) check if file of discharge exist on disk, remove it
+	 * 3) delete set up doctor to patient
+	 * 
+	 */
 	public boolean getDischarge(Connection con, int hcid, Patient patient) throws DBException, FileNotFoundException {
 
 		String dischargeP = "d:/EPAM/discharge.txt";
 
 		PreparedStatement ps = null;
-		ResultSet rs = null;
 
 		File f = new File(dischargeP);
-		File fDisch = new File("d:/EPAM/test2.txt");
-
-		if (f.isFile() && !f.isDirectory()) {
-			System.out.println("Exists 1 ");
-		} else {
-			System.out.println("Doesn't exist 1 ");
-		}
 
 		if (f.exists() && !f.isDirectory()) {
-			System.out.println("Exists 2 ");
+			log.log(Level.INFO, "File discharge.txt exists ");
 		} else {
-			System.out.println("Doesn't exist 2 ");
+			log.log(Level.INFO, "File discharge.txt doesnt exist");
 		}
 
-		if (Paths.get(dischargeP).toFile().isFile()) {
-			System.out.println("Exists 3 ");
+		File newFile = new File("d:/OldDischargeTxt/dischargeOld.txt");
+		if (f.renameTo(newFile)) {
+			log.log(Level.INFO, "File discharge.txt removed ");
 		} else {
-			System.out.println("Doesn't exist 3 ");
+			log.log(Level.INFO, "File discharge.txt didnt remove ");
 		}
-
-//		File newFile = new File("d:/OldDischargeTxt/dischargeOld.txt");
-//        if(f.renameTo(newFile)){
-//            System.out.println("Файл перемещен успешно");;
-//        }else{
-//            System.out.println("Файл не был перемещен");
-//        }
 
 		if (f.delete()) {
 			System.out.println(f.getName() + " deleted");
@@ -206,20 +196,17 @@ public class HospitalCardDao {
 
 		try {
 			ps = con.prepareStatement(SQL_DISCHARGE_PATIENT);
-
 			ps.setInt(1, hcid);
 			ps.setString(2, patient.getFirstname());
 			ps.setString(3, patient.getLastname());
 			ps.setDate(4, patient.getBirthday());
 			ps.executeQuery();
-
-			System.out.println("Patient was discharged with id of hospital card : " + hcid);
-
+			log.log(Level.INFO, "Patient was discharged with id of hospital card : " + hcid);
 		} catch (SQLException ex) {
-			logger.log(Level.SEVERE, "getDischarge(int hcid) failed : ", ex);
-			logger.log(Level.INFO, "Patient was discharged with id of hospital card : \" + hcid : ", ex);
-			System.out.println("Can't discharge patient:" + ex.getMessage());
+			log.log(Level.DEBUG, "getDischarge(int hcid) failed : ", ex);
 			throw new DBException("Cannot get the patient", ex);
+		} finally {
+			DbManager.close(ps);
 		}
 
 		String str = "";
@@ -228,7 +215,6 @@ public class HospitalCardDao {
 		str = sc.nextLine();
 
 		String[] words = str.split("\t");
-		System.out.println(words.length);
 		for (int i = 0; i < words.length; i++) {
 			System.out.println(words[i]);
 		}

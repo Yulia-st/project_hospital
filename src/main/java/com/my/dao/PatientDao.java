@@ -5,19 +5,23 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+
+import com.my.control.SortQuant;
 import com.my.db.DbManager;
+import com.my.entity.Admin;
 import com.my.entity.HospitalCard;
 import com.my.entity.Patient;
 
 import com.my.exception.DBException;
+import com.my.exception.UsernameExistsException;
 
 public class PatientDao {
-
-	private static Logger log = Logger.getLogger(PatientDao.class.getName());
-
+	private static final Logger log = Logger.getLogger(PatientDao.class);
+	
+	private static final String SQL_SELECT_PATIENT = "SELECT * FROM patient WHERE username=?";
 	private static final String SQL_PATIENTS_NUMBER_OF_RECORDS = "SELECT COUNT(*) AS number_patient FROM  patient";
 	private static final String SQL_INSERT_HCARD = "INSERT INTO hospital_card VALUES ()";
 	private static final String SQL_INSERT_PATIENT = "INSERT INTO patient VALUES (DEFAULT,?,?,?,?,?,?,?)";
@@ -62,11 +66,12 @@ public class PatientDao {
 				p.setHcId(rs.getInt("hc_id"));
 
 			} else {
+				log.log(Level.INFO, "No patient with id " + pId);
 				throw new NoSuchElementException("No patient with id " + pId);
 			}
 
 		} catch (SQLException ex) {
-			log.log(Level.SEVERE, "Cannot get the patient: ", ex);
+			log.log(Level.DEBUG, "Cannot get the patient: ", ex);
 			throw new DBException("Cannot get the patient", ex);
 		}finally {
 			DbManager.close(rs);
@@ -75,6 +80,49 @@ public class PatientDao {
 		return p;
 	}
 
+	
+	public Patient getPatientByUsername(Connection con, String username) throws DBException, UsernameExistsException {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Patient patient = new Patient();
+
+		try {
+			ps = con.prepareStatement(SQL_SELECT_PATIENT);
+			ps.setString(1, username);
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				patient.setpId(rs.getInt("p_id"));
+				patient.setFirstname(rs.getString("firstname"));
+				patient.setLastname(rs.getString("lastname"));
+				patient.setUsername(rs.getString("username"));
+				patient.setBirthday(rs.getDate("birthday"));
+				patient.setPassword(rs.getString("password"));
+				// String hashpass=hash(rs.getString("password"));
+				// System.out.println(hashpass);
+
+				// admin.setPassword(hashpass);
+				// hash(password)
+				patient.setrId(rs.getInt("r_id"));
+				patient.setHcId(rs.getInt("hc_id"));
+			} else {
+				log.log(Level.INFO, "No patient with username " + username);
+				//throw new UsernameExistsException("Username already Exists");
+			}
+		} catch (SQLException ex) {
+			System.out.println(ex);
+			log.log(Level.DEBUG, "Cannot get patient: ", ex);
+			throw new DBException("Cannot get patient", ex);
+
+		} finally {
+			DbManager.close(rs);
+			DbManager.close(ps);
+		}
+		return patient;
+
+	}
+	
+	
+	
 	public List<Patient> findAllPatients(Connection con, int limit, int offset) {
 		List<Patient> patients = new ArrayList<>();
 		PreparedStatement ps = null;
@@ -98,7 +146,7 @@ public class PatientDao {
 				patients.add(p);
 			}
 		} catch (Exception e) {
-			log.log(Level.SEVERE, "findAllPatients() failed: ", e);
+			log.log(Level.DEBUG, "findAllPatients() failed: ", e);
 			return Collections.emptyList();
 		}finally {
 			DbManager.close(rs);
@@ -168,7 +216,7 @@ public class PatientDao {
 				ps2.executeUpdate();
 			} catch (SQLException ex) {
 				correct = false;
-				log.log(Level.SEVERE, "Cannot insert hospital card or the patient: ", ex);
+				log.log(Level.DEBUG, "Cannot insert hospital card or the patient: ", ex);
 				throw new DBException("Cannot insert hospital card or the patient", ex);
 			}
 			if (correct) {
@@ -206,7 +254,7 @@ public class PatientDao {
 				p.setHcId(rs.getInt(8));
 			}
 		} catch (Exception e) {
-			log.log(Level.SEVERE, "find all patients exception : ", e);
+			log.log(Level.DEBUG, "find all patients exception : ", e);
 			return Collections.emptyList();
 		} finally {
 			DbManager.close(rs);
@@ -237,7 +285,7 @@ public class PatientDao {
 				p.setHcId(rs.getInt(8));
 			}
 		} catch (Exception e) {
-			log.log(Level.SEVERE, "find all patients exception : ", e);
+			log.log(Level.DEBUG, "find all patients exception : ", e);
 			return Collections.emptyList();
 		} finally {
 			DbManager.close(rs);
@@ -256,7 +304,7 @@ public class PatientDao {
 			//System.out.println("Patient was deleted with id: " + id);
 			con.commit();
 		} catch (SQLException ex) {
-			log.log(Level.SEVERE, "deletePatient(int id) failed : ", ex);
+			log.log(Level.DEBUG, "deletePatient(int id) failed : ", ex);
 			DbManager.rollback(con);
 			System.out.println("Can't delete patient:" + ex.getMessage());
 			throw new DBException("Can't delete patient by id" + id, ex);
@@ -286,10 +334,10 @@ public class PatientDao {
 			}
 			con.commit();
 		} catch (SQLException ex) {
-			log.log(Level.SEVERE, "updatePatient(int id) failed : ", ex);
+			log.log(Level.DEBUG, "updatePatient(int id) failed : ", ex);
 			DbManager.rollback(con);
 			throw new DBException("Can't update patient", ex);
-			//return false;
+			
 		} finally {
 			DbManager.close(ps);
 		}

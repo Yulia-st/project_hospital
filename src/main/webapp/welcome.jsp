@@ -115,5 +115,7 @@ td, th {
 	<form action="logout">
 		<input type="submit" value="logout" class="apply-button">
 	</form>
+	
+	
 </body>
 </html>

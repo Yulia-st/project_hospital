@@ -3,8 +3,7 @@ package com.my.control;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,16 +11,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 import com.my.db.DbManager;
-import com.my.entity.HospitalCard;
-import com.my.entity.Patient;
 
 import com.my.exception.DBException;
 
 @WebServlet("/test")
 public class ConnectionTest extends HttpServlet {
-	private static Logger log = Logger.getLogger(ConnectionTest.class.getName());
+	//private static Logger log = Logger.getLogger(ConnectionTest.class.getName());
+	private static final Logger log = Logger.getLogger(ConnectionTest.class);
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.println("ConnectionTest#doGet");
@@ -30,8 +30,8 @@ public class ConnectionTest extends HttpServlet {
 		try {
 			Connection con = DbManager.getInstance().getConnection();
 			System.out.println(con);
-		}catch(SQLException e){
-			e.printStackTrace();
+		}catch(SQLException ex){
+			log.log(Level.DEBUG, "getConnection() failed : ", ex);
 		}
 }
 		

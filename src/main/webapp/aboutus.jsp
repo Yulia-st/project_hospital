@@ -50,7 +50,7 @@
 				receiving.</div>
 			<div class="item">If you are interested in treatment, service,
 				procedure, here you will find doctors of appropriate qualifications.</div>
-			<div class="item">The organization is located next to the
+			<div class="item"><style color: green>The organization is located </style>next to the
 				Fictional metro station, at 1314 Happy. You can call: 111222333.
 				Reception hours - Mon-Sat: 08:00 - 20:00.</div>
 		</div>

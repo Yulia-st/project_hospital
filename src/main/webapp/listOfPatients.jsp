@@ -86,6 +86,7 @@ td, th {
 			<th>ID_Role</th>
 			<th>ID_HospCard</th>
 		</tr>
+		<%-- <c:forEach items="${sessionScope.patients}" var="patient">--%>
 		<c:forEach items="${requestScope.patients}" var="patient">
 			<tr>
 				<td><c:out value="${patient.pId }"></c:out></td>

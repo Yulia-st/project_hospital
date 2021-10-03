@@ -1,4 +1,4 @@
-<%@page import="com.my.entity.DoctorNew"%>
+<%@page import="com.my.entity.Doctor"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 
@@ -13,7 +13,7 @@
 	<p>
 
 		<%
-		DoctorNew doc1 = (DoctorNew) session.getAttribute("doctor");
+		Doctor doc1 = (Doctor) session.getAttribute("doctor");
 				out.println(doc1);
 		%>
 	

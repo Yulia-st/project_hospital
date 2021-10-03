@@ -3,21 +3,23 @@ package com.my.db;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+
+import com.my.control.SortQuant;
+
 
 public class DbManager {
+	private static final Logger log = Logger.getLogger(DbManager.class);
 	private static DbManager instance;
 	private DataSource ds;
 	
-	
-	private static Logger log = Logger.getLogger(DbManager.class.getName());
-
 	private DbManager() {
 		try {
 			Context initContext = new InitialContext();
@@ -46,7 +48,7 @@ public class DbManager {
 			try {
 				ac.close();
 			} catch (Exception ex) {
-				log.log(Level.SEVERE, "close(AutoCloseable ac) failed: ", ex);
+				log.log(Level.DEBUG, "close(AutoCloseable ac) failed: ", ex);
 			}
 		}
 	}
@@ -56,7 +58,7 @@ public class DbManager {
 			try {
 				con.rollback();
 			} catch (SQLException ex) {
-				log.log(Level.SEVERE, "rollback() failed: ", ex);
+				log.log(Level.DEBUG, "rollback() failed: ", ex);
 			}
 		}
 	}

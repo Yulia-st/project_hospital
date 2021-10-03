@@ -61,13 +61,8 @@ td, th {
 		</tr>
 		<c:forEach items="${requestScope.patsDocs}" var="pd">
 			<tr>
-				<td><c:out value="${pd.pId }"></c:out></td>
+			<td><a href='<c:url value="edit?pId=${pd.pId }" />'><c:out value="${pd.pId }" ></c:out></a></td>
 				<td><c:out value="${pd.dId }" ></c:out></td>
-				<td><a href='<c:out value="${pd.dId }" ></c:out>'></a></td>
-				<td><a href='<c:url value="/edit?pId=${pd.pId }" />'><c:out value="${pd.dId }" ></c:out></a></td>
-				
-				<%-- <td><a href ="/">Edit</a></td>--%>
-				<td><a href='<c:url value="/edit?pId=${pd.pId }" />'>Edit</a></td>
 				<td>
 					<form method="post" action='<c:url value="deleteP" />'
 						style="display: inline;">
